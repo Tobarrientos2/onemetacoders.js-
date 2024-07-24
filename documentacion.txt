@@ -1,0 +1,25 @@
+Closures y scope
+Prototipos y herencia
+Event loop y asincronía
+Promesas y async/await
+Generadores e iteradores
+Manipulación del DOM
+Manejo de eventos
+Módulos ES6
+Destructuring y spread operator
+Map, Set, WeakMap y WeakSet
+Proxy y Reflect
+Symbol y sus usos
+Programación funcional en JavaScript
+Métodos de Array (map, reduce, filter, etc.)
+Regex y manipulación de strings
+Web Workers
+Service Workers
+IndexedDB y almacenamiento local
+WebSockets
+APIs del navegador (Geolocation, Web Audio, etc.)
+Rendering y optimización de rendimiento
+Seguridad en JavaScript (XSS, CSRF, etc.)
+TypeScript y sistemas de tipos
+Patrones de diseño en JavaScript
+Testing y depuración en JavaScript
