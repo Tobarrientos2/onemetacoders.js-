@@ -1,34 +1,39 @@
-# Panel de Control Secreto - TailwindMaze
+# CodeCTF: Desafíos de Programación
 
 ## Descripción
 
-Este proyecto es una aplicación web interactiva desarrollada con Svelte y Tailwind CSS. Presenta un "Panel de Control Secreto" que incluye un juego de descubrimiento y un editor de clases CSS en tiempo real.
+CodeCTF es una plataforma de Capture The Flag (CTF) diseñada específicamente para programadores. El proyecto presenta una serie de desafíos basados en diferentes tópicos de programación, donde los participantes deben utilizar sus habilidades de codificación para descubrir y capturar "banderas" ocultas.
 
-## Características principales
+Actualmente, el proyecto incluye un desafío basado en Tailwind CSS, con planes de expandirse a más tópicos en el futuro.
 
-- Panel de control con tres módulos visuales
+## Desafío Actual: TailwindMaze
+
+El primer desafío, TailwindMaze, pone a prueba el conocimiento de los participantes sobre Tailwind CSS. Los jugadores deben navegar por un "laberinto" de clases CSS para revelar un mensaje secreto.
+
+### Características del Desafío TailwindMaze
+
+- Panel de control interactivo con módulos visuales
 - Botón secreto con clases CSS personalizables
-- Mensaje secreto que se revela al activar correctamente el botón
-- Editor de código en tiempo real para modificar las clases CSS del botón y su contenedor
-- Diseño responsivo utilizando Tailwind CSS
+- Editor de código en tiempo real para modificar clases CSS
+- Mensaje oculto que se revela al aplicar las clases correctas
 
-## Tecnologías utilizadas
+## Tecnologías Utilizadas
 
 - Svelte
 - TypeScript
 - Tailwind CSS
-- CodeMirror (para el editor de código)
+- CodeMirror (para el editor de código en tiempo real)
 
 ## Instalación
 
 1. Clona este repositorio:
    ```
-   git clone https://github.com/tu-usuario/tailwind-maze.git
+   git clone https://github.com/tu-usuario/code-ctf.git
    ```
 
 2. Navega al directorio del proyecto:
    ```
-   cd tailwind-maze
+   cd code-ctf
    ```
 
 3. Instala las dependencias:
@@ -41,24 +46,30 @@ Este proyecto es una aplicación web interactiva desarrollada con Svelte y Tailw
    npm run dev
    ```
 
-5. Abre tu navegador y visita `http://localhost:5000` (o el puerto que te indique la consola).
+5. Abre tu navegador y visita `http://localhost:5000` (o el puerto indicado en la consola).
 
-## Uso
+## Cómo Jugar
 
-1. Explora los tres módulos en el panel de control.
-2. Intenta descubrir el secreto haciendo clic en el botón.
-3. Utiliza el editor de código para modificar las clases CSS del botón y su contenedor.
-4. Aplica los cambios para ver cómo afectan al estilo del botón.
-5. Utiliza el botón "Restablecer Clases" para volver a los estilos por defecto.
+1. Accede al desafío TailwindMaze desde la página principal.
+2. Explora el panel de control y sus módulos.
+3. Utiliza el editor de código para modificar las clases CSS del botón secreto.
+4. Intenta descubrir la combinación correcta de clases para revelar el mensaje oculto.
+5. Una vez revelado el mensaje, habrás capturado la "bandera" y completado el desafío.
 
-## Estructura del proyecto
+## Estructura del Proyecto
 
-- `src/routes/tailwind-maze/+page.svelte`: Componente principal de la aplicación
+- `src/routes/tailwind-maze/+page.svelte`: Componente principal del desafío TailwindMaze
 - `linear/src/routes/tailwind-maze/+page.svelte.yml`: Archivo de descripción del componente (para desarrollo)
 
 ## Contribuir
 
-Las contribuciones son bienvenidas. Por favor, abre un issue para discutir cambios mayores antes de crear un pull request.
+Las contribuciones son bienvenidas, especialmente para añadir nuevos desafíos basados en diferentes tópicos de programación. Por favor, abre un issue para discutir nuevas ideas o cambios mayores antes de crear un pull request.
+
+## Próximos Pasos
+
+- Implementar un sistema de puntuación y seguimiento de progreso.
+- Añadir más desafíos basados en otros frameworks y lenguajes de programación.
+- Crear una interfaz de usuario para seleccionar entre múltiples desafíos.
 
 ## Licencia
 
