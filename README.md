@@ -1,8 +1,8 @@
-# CodeCTF: Desafíos de Programación
+# OneMetaCoders CTF: Desafíos de Programación
 
 ## Descripción
 
-CodeCTF es una plataforma de Capture The Flag (CTF) diseñada específicamente para programadores. El proyecto presenta una serie de desafíos basados en diferentes tópicos de programación, donde los participantes deben utilizar sus habilidades de codificación para descubrir y capturar "banderas" ocultas.
+OneMetaCoders CTF es una plataforma de Capture The Flag (CTF) diseñada específicamente para programadores. El proyecto presenta una serie de desafíos basados en diferentes tópicos de programación, donde los participantes deben utilizar sus habilidades de codificación para descubrir y capturar "banderas" ocultas.
 
 Actualmente, el proyecto incluye un desafío basado en Tailwind CSS, con planes de expandirse a más tópicos en el futuro.
 
