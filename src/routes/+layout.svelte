@@ -2,6 +2,7 @@
     import '../app.css'
     import { ModeWatcher } from "mode-watcher";
     import { Button } from "$lib/components/ui/button";
+    import Navigation from '$lib/components/Navigation.svelte';
     import { Sheet, SheetContent, SheetTrigger } from "$lib/components/ui/sheet";
     import { Menu } from "lucide-svelte";
 
@@ -19,6 +20,8 @@
 <ModeWatcher />
 
 <div class="grid h-screen w-screen grid-cols-1 md-custom:grid-cols-[auto,1fr]">
+    <Navigation />
+
     <!-- Menú para móviles (hasta 767px) -->
     <Sheet bind:open={isOpen}>
         <SheetTrigger asChild>

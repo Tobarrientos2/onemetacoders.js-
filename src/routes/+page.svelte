@@ -1,7 +1,9 @@
 <script lang="ts">
     import { Button } from "$lib/components/ui/button";
     import { ShoppingCart } from "lucide-svelte";
+    import GlowButton from '$lib/components/GlowButton.svelte';
     import Navigation from "$lib/components/Navigation.svelte";
+    import FeatureCard from "$lib/components/FeatureCard.svelte";
     
     // Datos de ejemplo para los CTFs
     const features = [
@@ -26,10 +28,14 @@
             size: "lg:col-span-1"
         }
     ];
+
+    function handleButtonClick() {
+    // Lógica para manejar el clic del botón
+    console.log('Botón clickeado');
+  }
 </script>
     
     <div class="min-h-screen bg-gradient-to-br from-purple-900 to-black text-white">
-      <Navigation />
       
       <main class="container mx-auto px-4 py-20">
         <!-- Sección Hero existente -->
@@ -43,7 +49,7 @@
             <p class="text-lg mb-8 text-purple-200">
               Dive into our visionary projects and see how we're bringing the power of blockchain to real-world applications.
             </p>
-            <Button size="lg" class="bg-purple-600 hover:bg-purple-700">Get Started</Button>
+            <GlowButton text="Get Started" onClick={() => console.log('Get Started clicked')} />
           </div>
           
           <div class="lg:w-1/2 relative">
@@ -54,33 +60,28 @@
         </div>
     
         <!-- Nueva sección de CTFs -->
-        <section class="mt-32 px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl lg:text-5xl font-bold mb-4">
-                    Learn about the most<br/>
-                    important features of our<br/>
-                    <span class="text-purple-400">product</span>
-                </h2>
-                <div class="inline-block bg-purple-800 text-purple-200 px-4 py-2 rounded-full text-sm font-semibold">FEATURES</div>
-            </div>
+      
+    <!-- Nueva sección de CTFs -->
+    <section class="mt-32 px-4">
+      <div class="text-center mb-16">
+          <h2 class="text-3xl lg:text-5xl font-bold mb-4">
+              Learn about the most<br/>
+              important features of our<br/>
+              <span class="text-purple-400">product</span>
+          </h2>
+          <div class="inline-block bg-purple-800 text-purple-200 px-4 py-2 rounded-full text-sm font-semibold">FEATURES</div>
+      </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {#each features as feature, index}
-                    <div class="bg-purple-900 bg-opacity-20 rounded-2xl p-6 backdrop-blur-lg relative overflow-hidden {feature.size}">
-                        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600 to-purple-900 opacity-10"></div>
-                        <div class="relative z-10">
-                            <div class="h-40 mb-6 relative">
-                                <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-700 rounded-full transform rotate-45 blur-2xl opacity-30"></div>
-                                <div class="absolute inset-0 border border-purple-400 rounded-full transform -rotate-12"></div>
-                                <div class="absolute inset-0 border border-purple-300 rounded-full transform rotate-45 scale-75"></div>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-3 text-white">{feature.title}</h3>
-                            <p class="text-purple-200">{feature.description}</p>
-                        </div>
-                    </div>
-                {/each}
-            </div>
-        </section>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {#each features as feature}
+              <FeatureCard 
+                  title={feature.title}
+                  description={feature.description}
+                  size={feature.size}
+              />
+          {/each}
+      </div>
+  </section>
         
       </main>
     </div>
