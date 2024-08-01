@@ -1,9 +1,13 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import { Button } from "$lib/components/ui/button";
     import { ShoppingCart } from "lucide-svelte";
     import GlowButton from '$lib/components/GlowButton.svelte';
     import Navigation from "$lib/components/Navigation.svelte";
     import FeatureCard from "$lib/components/FeatureCard.svelte";
+    import { auth } from '$lib/stores/auth';
+    import UserProgress from '$lib/components/UserProgress.svelte';
+    import Leaderboard from '$lib/components/Leaderboard.svelte';
     
     // Datos de ejemplo para los CTFs
     const features = [
@@ -33,9 +37,16 @@
     // Lógica para manejar el clic del botón
     console.log('Botón clickeado');
   }
+
+  onMount(() => {
+    // Verificar el estado de autenticación al cargar la página
+    auth.checkAuth();
+  });
 </script>
     
     <div class="min-h-screen bg-gradient-to-br from-purple-900 to-black text-white">
+      
+      <Navigation />
       
       <main class="container mx-auto px-4 py-20">
         <!-- Sección Hero existente -->
@@ -59,9 +70,14 @@
           </div>
         </div>
     
+        {#if $auth.isAuthenticated}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
+            <UserProgress />
+            <Leaderboard />
+          </div>
+        {/if}
+
         <!-- Nueva sección de CTFs -->
-      
-    <!-- Nueva sección de CTFs -->
     <section class="mt-32 px-4">
       <div class="text-center mb-16">
           <h2 class="text-3xl lg:text-5xl font-bold mb-4">

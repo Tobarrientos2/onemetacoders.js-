@@ -9,34 +9,34 @@
   import { javascript } from '@codemirror/lang-javascript';
   import { oneDark } from '@codemirror/theme-one-dark';
   import { writable } from 'svelte/store';
-  import { VM } from 'vm2';
-  import { analizarCodigo } from './analizar-codigo';
+  import { crearSimuladorTareas, generarTareas } from '$lib/utils/taskSimulator';
 
   let editorCodigo: EditorView;
   let editorSolucion: EditorView;
   let resultado = writable('');
 
   const codigoInicial = `/**
- * Tu misión, si decides aceptarla, es implementar la función 'hackearSistema'.
- * Esta función debe navegar por un laberinto asíncrono de servidores y firewalls.
+ * Tu misión es implementar la función 'gestionarTareas'.
+ * Esta función debe manejar múltiples tareas asíncronas con diferentes prioridades y dependencias.
  * 
  * Reglas:
- * 1. Debes usar 'await' para cada llamada a 'accederServidor' y 'superarFirewall'.
- * 2. Si encuentras un error, debes intentar nuevamente hasta 3 veces antes de pasar al siguiente servidor.
- * 3. Debes mantener un registro de todos los servidores accedidos exitosamente.
- * 4. El último servidor contiene el 'códigoSecreto' que debes retornar.
- * 5. Tienes un límite de tiempo total de 5000ms para completar la misión.
+ * 1. Debes usar 'await' para cada llamada a 'ejecutarTarea'.
+ * 2. Las tareas de alta prioridad deben ejecutarse primero.
+ * 3. Algunas tareas dependen de otras y no pueden iniciarse hasta que sus dependencias se completen.
+ * 4. Si una tarea falla, debes reintentar hasta 2 veces antes de pasar a la siguiente.
+ * 5. Debes mantener un registro de todas las tareas completadas y fallidas.
  * 
- * @param {function} accederServidor - Función asíncrona que simula el acceso a un servidor. Retorna el siguiente servidor o lanza un error.
- * @param {function} superarFirewall - Función asíncrona que simula superar un firewall. Retorna true si tiene éxito o lanza un error.
- * @return {Promise<string>} El código secreto obtenido del último servidor.
+ * @param {function} ejecutarTarea - Función asíncrona que simula la ejecución de una tarea. 
+ *                                   Recibe un objeto de tarea y retorna el resultado o lanza un error.
+ * @param {Array} tareas - Array de objetos de tarea con propiedades: id, prioridad, dependencias.
+ * @return {Promise<Object>} Un objeto con las tareas completadas y fallidas.
  */
-async function hackearSistema(accederServidor, superarFirewall) {
+async function gestionarTareas(ejecutarTarea, tareas) {
   // Tu código aquí
 }
 
 // No modifiques esta parte
-export { hackearSistema };`;
+export { gestionarTareas };`;
 
   onMount(() => {
     cargarEditores();
@@ -62,48 +62,65 @@ export { hackearSistema };`;
     const codigo = editorSolucion.state.doc.toString();
     
     try {
-      // Crear un entorno sandbox
-      const vm = new VM({
-        timeout: 5000,
-        sandbox: {
-          accederServidor: async () => {
-            // Simular latencia de red
-            await new Promise(resolve => setTimeout(resolve, Math.random() * 500));
-            if (Math.random() < 0.3) throw new Error('Acceso denegado');
-            return Math.random().toString(36).substring(7);
-          },
-          superarFirewall: async () => {
-            // Simular firewall
-            await new Promise(resolve => setTimeout(resolve, Math.random() * 300));
-            if (Math.random() < 0.2) throw new Error('Firewall impenetrable');
-            return true;
-          }
-        }
-      });
+      const funcionUsuario = new Function(`
+        ${codigo}
+        return gestionarTareas;
+      `)();
 
-      // Ejecutar el código del usuario en el sandbox
-      const { hackearSistema } = vm.run(`(${codigo})`);
+      const ejecutarTarea = crearSimuladorTareas();
+      const tareas = generarTareas(5);
 
-      const inicioTiempo = Date.now();
-      const codigoSecreto = await hackearSistema(vm.sandbox.accederServidor, vm.sandbox.superarFirewall);
-      const tiempoTotal = Date.now() - inicioTiempo;
-
-      // Evaluar la solución
-      if (tiempoTotal > 5000) {
-        resultado.set('Tiempo excedido. Misión fallida.');
-      } else if (typeof codigoSecreto === 'string' && codigoSecreto.length === 8) {
-        resultado.set(`¡Misión cumplida! Código secreto: ${codigoSecreto}. Tiempo: ${tiempoTotal}ms`);
+      const resultadoUsuario = await funcionUsuario(ejecutarTarea, tareas);
+      
+      const esCorrecta = verificarSolucion(resultadoUsuario, tareas);
+      
+      if (esCorrecta) {
+        resultado.set('¡Solución correcta! ' + JSON.stringify(resultadoUsuario, null, 2));
       } else {
-        resultado.set('Código secreto inválido. Misión fallida.');
+        resultado.set('Solución incorrecta. Revisa las reglas y vuelve a intentarlo.');
       }
-
-      // Analizar el código estáticamente
-      const analisisEstatico = analizarCodigo(codigo);
-      console.log('Análisis estático:', analisisEstatico);
-
     } catch (error) {
       resultado.set(`Error: ${error.message}`);
     }
+  }
+
+  function verificarSolucion(resultado: any, tareas: any[]): boolean {
+    // Verificar que el resultado tiene las propiedades correctas
+    if (!resultado.completadas || !resultado.fallidas) {
+      return false;
+    }
+
+    // Verificar que todas las tareas están en completadas o fallidas
+    const todasLasTareas = new Set(tareas.map(t => t.id));
+    const tareasCompletadas = new Set(resultado.completadas.map((t: any) => t.id));
+    const tareasFallidas = new Set(resultado.fallidas.map((t: any) => t.id));
+
+    if (tareasCompletadas.size + tareasFallidas.size !== todasLasTareas.size) {
+      return false;
+    }
+
+    // Verificar que las tareas de alta prioridad se ejecutaron primero
+    const tareasAltaPrioridad = tareas.filter(t => t.prioridad === 'alta').map(t => t.id);
+    const indicesAltaPrioridad = tareasAltaPrioridad.map(id => resultado.completadas.findIndex((t: any) => t.id === id));
+    if (!indicesAltaPrioridad.every((index, i) => index <= i)) {
+      return false;
+    }
+
+    // Verificar que las dependencias se respetaron
+    for (const tarea of resultado.completadas) {
+      const tareaOriginal = tareas.find(t => t.id === tarea.id);
+      if (tareaOriginal) {
+        for (const dependencia of tareaOriginal.dependencias) {
+          const indiceDependencia = resultado.completadas.findIndex((t: any) => t.id === dependencia);
+          const indiceTarea = resultado.completadas.findIndex((t: any) => t.id === tarea.id);
+          if (indiceDependencia === -1 || indiceDependencia > indiceTarea) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 
   function enviarSolucion() {
@@ -120,8 +137,8 @@ export { hackearSistema };`;
       </CardHeader>
       <CardContent>
         <p class="mb-4">
-          Tu misión, si decides aceptarla, es implementar la función 'hackearSistema'.
-          Esta función debe navegar por un laberinto asíncrono de servidores y firewalls,
+          Tu misión, si decides aceptarla, es implementar la función 'gestionarTareas'.
+          Esta función debe manejar múltiples tareas asíncronas con diferentes prioridades y dependencias,
           poniendo a prueba tus habilidades avanzadas en asincronía de JavaScript.
         </p>
         
@@ -130,19 +147,19 @@ export { hackearSistema };`;
             <AccordionTrigger>Reglas del Desafío</AccordionTrigger>
             <AccordionContent>
               <ol class="list-decimal list-inside">
-                <li>Usa 'await' para cada llamada a 'accederServidor' y 'superarFirewall'.</li>
-                <li>Si encuentras un error, intenta nuevamente hasta 3 veces antes de pasar al siguiente servidor.</li>
-                <li>Mantén un registro de todos los servidores accedidos exitosamente.</li>
-                <li>El último servidor contiene el 'códigoSecreto' que debes retornar.</li>
-                <li>Tienes un límite de tiempo total de 5000ms para completar la misión.</li>
+                <li>Debes usar 'await' para cada llamada a 'ejecutarTarea'.</li>
+                <li>Las tareas de alta prioridad deben ejecutarse primero.</li>
+                <li>Algunas tareas dependen de otras y no pueden iniciarse hasta que sus dependencias se completen.</li>
+                <li>Si una tarea falla, debes reintentar hasta 2 veces antes de pasar a la siguiente.</li>
+                <li>Debes mantener un registro de todas las tareas completadas y fallidas.</li>
               </ol>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="example">
             <AccordionTrigger>Ejemplo</AccordionTrigger>
             <AccordionContent>
-              <p>Input: Una serie de servidores y firewalls simulados</p>
-              <p>Output: "a1b2c3d4" (un código secreto de 8 caracteres)</p>
+              <p>Input: Una serie de tareas con prioridades y dependencias</p>
+              <p>Output: Un objeto con las tareas completadas y fallidas</p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -156,9 +173,9 @@ export { hackearSistema };`;
             <div id="editor-codigo" class="border border-gray-300 rounded"></div>
           </TabsContent>
           <TabsContent value="testcases">
-            <p>Caso 1: 5 servidores, 3 firewalls, 30% probabilidad de error</p>
-            <p>Caso 2: 10 servidores, 5 firewalls, 50% probabilidad de error</p>
-            <p>Caso 3: 3 servidores, 1 firewall, 10% probabilidad de error</p>
+            <p>Caso 1: 5 tareas, 3 dependencias, 30% probabilidad de error</p>
+            <p>Caso 2: 10 tareas, 5 dependencias, 50% probabilidad de error</p>
+            <p>Caso 3: 3 tareas, 1 dependencia, 10% probabilidad de error</p>
           </TabsContent>
         </Tabs>
       </CardContent>

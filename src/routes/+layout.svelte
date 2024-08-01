@@ -5,9 +5,16 @@
     import Navigation from '$lib/components/Navigation.svelte';
     import { Sheet, SheetContent, SheetTrigger } from "$lib/components/ui/sheet";
     import { Menu } from "lucide-svelte";
+    import { auth } from '$lib/stores/auth';
+    import { onMount } from 'svelte';
+    import { navigating } from '$app/stores';
+    import { SvelteToast } from '@zerodevx/svelte-toast';
 
     const ctfList = [
         {name: 'Javascript Async', link:'/javascript-async'},
+        { name: "Registro", link: "/auth/register" },
+        { name: "Iniciar Sesión", link: "/auth/login" },
+        { name: "JavaScript Async 2", link: "/javascript-async-2" },
     ];
 
     let isOpen = false;
@@ -15,9 +22,17 @@
     function toggleMenu() {
         isOpen = !isOpen;
     }
+
+    onMount(() => {
+        auth.initialize();
+    });
 </script>
 
 <ModeWatcher />
+
+{#if $navigating}
+  <!-- Aquí puedes añadir un indicador de carga si lo deseas -->
+{/if}
 
 <div class="grid h-screen w-screen grid-cols-1 md-custom:grid-cols-[auto,1fr]">
     <Navigation />
@@ -53,3 +68,5 @@
         <slot></slot>
     </main>
 </div>
+
+<SvelteToast />
